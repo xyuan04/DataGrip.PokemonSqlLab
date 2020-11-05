@@ -11,6 +11,7 @@
 Directions:
 
 * In DataGrip, [connect to your local mysql instance](https://www.jetbrains.com/help/idea/connecting-to-a-database.html#mysql)
+**(for those not using DataGrip, you can execute the files in the command line, using the following syntax: ```mysql -u your_mysql_user -p < the_name_of_the_file.sql```)
 * Create your pokemon schema
 * Unpack the pokemon_sql.zip files
 * One by one execute these files making sure to check your pokemon schema
