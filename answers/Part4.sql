@@ -1,11 +1,11 @@
-Pokemon Name	Trainer Name	Level	Primary Type	Secondary Type
-Pokemon's name	Trainer's name	Current Level	Primary Type Name	Secondary Type Name
+#Pokemon Name	Trainer Name	Level	Primary Type	Secondary Type
+#Pokemon's name	Trainer's name	Current Level	Primary Type Name	Secondary Type Name
 
-Sort by trainer by strongest to weakest
+#Sort by trainer by strongest to weakest
 
-//The person with the most pokemon in the top 10 is the strongest
+//Ranking is based on average stats of all owned Pokemon
 
-SELECT p.name as "Pokemon Name", t.trainername as "Trainer Name", pt.pokelevel as "Pokemon Level", tp.name as "Primary Type", tp2.name as "Secondary Type", (AVG(pt.maxhp) + AVG(pt.attack) + AVG(defense) + AVG(spatk) + AVG(spdef) + AVG(speed))/6 as "Score"
+SELECT p.name as "Pokemon Name", t.trainername as "Trainer Name", pt.pokelevel as "Pokemon Level", tp.name as "Primary Type", tp2.name as "Secondary Type", Score
 FROM trainers t
          JOIN pokemon_trainer pt
               ON pt.trainerID = t.trainerID
@@ -15,5 +15,6 @@ FROM trainers t
               ON p.primary_type = tp.id
          JOIN types tp2
               ON p.secondary_type = tp2.id
-GROUP BY t.trainername, p.name, pt.pokelevel, tp.name, tp2.name
+         JOIN (SELECT AVG(maxhp + attack + defense + spatk + spdef + speed) as "Score", trainerID
+               FROM pokemon_trainer GROUP BY trainerID) as power ON power.trainerID = pt.trainerID
 ORDER BY Score DESC;
