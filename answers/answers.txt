@@ -1,0 +1,82 @@
+Part 2
+
+# What are all the types of pokemon that a pokemon can have?
+SELECT * FROM types;
+
+# What is the name of the pokemon with id 45?
+SELECT name FROM pokemons WHERE id = 45;
+
+# How many pokemon are there?
+SELECT COUNT(*) FROM pokemons;
+
+# How many types are there?
+SELECT COUNT(*) FROM types;
+
+# How many pokemon have a secondary type?
+SELECT COUNT(secondary_type) FROM pokemons;
+
+Part 3
+
+# What is each pokemon's primary type?
+SELECT p.name, t.name FROM pokemons p JOIN types t ON p.primary_type = t.id;
+
+# What is Rufflet's secondary type?
+SELECT p.name, t.name FROM pokemons p JOIN types t ON p.secondary_type = t.id WHERE p.name = 'Rufflet';
+
+# What are the names of the pokemon that belong to the trainer with trainerID 303?
+SELECT pt.trainerID, t.trainername, p.name
+FROM pokemon_trainer pt
+JOIN trainers t
+ON pt.trainerID = t.trainerID
+JOIN pokemons p
+ON pt.pokemon_id = p.id
+WHERE pt.trainerID = 303;
+
+# How many pokemon have a secondary type Poison
+SELECT COUNT(*)
+FROM pokemons p
+JOIN types t
+ON p.secondary_type = t.id
+WHERE t.name = 'Poison';
+
+# What are all the primary types and how many pokemon have that type?
+SELECT t.name, COUNT(*)
+FROM types t
+JOIN pokemons p
+ON t.id = p.primary_type
+GROUP BY t.name;
+
+# How many pokemon at level 100 does each trainer with at least one level 100 pokemone have? (Hint: your query should not display a trainer
+SELECT COUNT(pokelevel) numberOfLevel100s
+FROM pokemon_trainer
+WHERE pokelevel = 100
+GROUP BY trainerID;
+
+# How many pokemon only belong to one trainer and no other?
+SELECT COUNT(pt.pokemon_id), p.name
+FROM pokemon_trainer pt
+JOIN pokemons p
+ON pt.pokemon_id = p.id
+GROUP BY pt.pokemon_id
+HAVING COUNT(pt.pokemon_id) = 1;
+
+Part 4
+Pokemon Name	Trainer Name	Level	Primary Type	Secondary Type
+Pokemon's name	Trainer's name	Current Level	Primary Type Name	Secondary Type Name
+
+Sort by trainer by strongest to weakest
+
+//The person with the most pokemon in the top 10 is the strongest
+
+SELECT p.name as "Pokemon Name", t.trainername as "Trainer Name", pt.pokelevel as "Pokemon Level", tp.name as "Primary Type", tp2.name as "Secondary Type", (AVG(pt.maxhp) + AVG(pt.attack) + AVG(defense) + AVG(spatk) + AVG(spdef) + AVG(speed))/6 as "Score"
+FROM trainers t
+JOIN pokemon_trainer pt
+     ON pt.trainerID = t.trainerID
+JOIN pokemons p
+    ON pt.pokemon_id = p.id
+JOIN types tp
+    ON p.primary_type = tp.id
+JOIN types tp2
+    ON p.secondary_type = tp2.id
+GROUP BY t.trainername, p.name, pt.pokelevel, tp.name, tp2.name
+ORDER BY Score DESC;
